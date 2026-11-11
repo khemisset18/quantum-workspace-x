@@ -23,6 +23,7 @@ jobs:
           python quantum_workspace_tests_05.py
           python quantum_workspace_tests_06.py
           python quantum_workspace_tests_07.py
+          python quantum_workspace_tests_09.py
           python quantum_workspace_tests_08.py
       - name: Atomic friction and moving spin test
         run: python quantum_workspace_experience_08_friction.py --n 6 --chi 8 --dt 0.03 --sample-every 5
@@ -50,3 +51,4 @@ jobs:
           python -m pip install -r requirements-reference.txt
       - name: Cross-check MPS states with quimb
         run: python quantum_workspace_validation_quimb.py
+          python quantum_workspace_theorie_09_hybride_mpo.py --n 10 --chi 32 --repeats 2 --scenario switching
