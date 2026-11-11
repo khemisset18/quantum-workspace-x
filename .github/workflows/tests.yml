@@ -1,11 +1,11 @@
-name: Python checks
+name: Quantum Workspace X - Python checks
 
 on:
   push:
   pull_request:
 
 jobs:
-  tests:
+  numerical-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,9 +14,13 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
-      - name: Run numerical tests
-        run: python quantum_workspace_tests_01.py
+      - name: Run all numerical tests
+        run: |
+          python quantum_workspace_tests_01.py
           python quantum_workspace_tests_02.py
-      - name: Run experiment
-        run: python quantum_workspace_theorie_01.py
+          python quantum_workspace_tests_03.py
+      - name: Reproduce research experiments
+        run: |
+          python quantum_workspace_theorie_01.py
           python quantum_workspace_theorie_02_nombre_or.py
+          python quantum_workspace_theorie_03_arbres.py
