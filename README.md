@@ -79,6 +79,32 @@ python quantum_workspace_theorie_04_predictive_mps.py --n 8 --chi 16
 python quantum_workspace_theorie_04_predictive_mps.py --n 10 --chi 16
 ```
 
+## Théorie 05 — Faire mieux qu'une prédiction complexe
+
+Dans cette étape, nous testons un **contrôleur de réorganisation MPS qui n'utilise pas les interactions futures**. Il compare l'ordre fixe, une heuristique à partir des portes passées, une règle de confiance, l'information mutuelle quantique et son extrapolation. Un oracle qui connaît l'étape suivante sert seulement de limite théorique.
+
+Six graines de test, 8 qubits, 12 étapes :
+
+| Politique | SWAP moyens (interactions répétées) | SWAP moyens (interactions aléatoires) |
+|---|---:|---:|
+| Ordre fixe | 288,0 | 210,7 |
+| Historique des portes | **66,0** | 258,0 |
+| Historique + règle de confiance | 114,0 | **211,0** |
+| Corrélations MPS extrapolées | 66,0 | 223,0 |
+
+**Résultat honnête :** notre prédicteur basé sur la matrice complète d'information mutuelle ne gagne pas en temps total sur ces exemples, malgré certaines économies de SWAP. Une stratégie beaucoup moins coûteuse, basée sur l'historique, est préférable sur les circuits réguliers. Une règle de confiance empêche presque toutes les réorganisations inutiles quand les interactions sont aléatoires.
+
+Les fidélités sur 8 qubits sont proches de 1. Ces résultats ne démontrent **ni** une découverte scientifique **ni** une réduction de mémoire réelle.
+
+- [Prototype de la théorie 05](quantum_workspace_theorie_05_history_mps.py)
+- [Tests et contre-exemple de prédiction universelle](quantum_workspace_tests_05.py)
+- [Carnet 05 — hypothèse, protocole, limites et résultats](quantum_workspace_carnet_05.md)
+
+```bash
+python quantum_workspace_tests_05.py
+python quantum_workspace_theorie_05_history_mps.py --n 8 --chi 16 --seed 15
+```
+
 ## Installation
 
 Python 3.10+ recommandé :
@@ -104,11 +130,13 @@ python quantum_workspace_experience_01.py
 - `quantum_workspace_theorie_02_nombre_or.py` et `quantum_workspace_tests_02.py` : hypothèse d'ordre doré.
 - `quantum_workspace_theorie_03_arbres.py` et `quantum_workspace_tests_03.py` : arbres de tenseurs et tests.
 - `quantum_workspace_carnet_02.md` et `quantum_workspace_carnet_03.md` : protocoles expérimentaux et limites.
+- `quantum_workspace_theorie_05_history_mps.py` et `quantum_workspace_tests_05.py` : prédiction historique, contrôles négatifs et vérification.
+- `quantum_workspace_carnet_05.md` : carnet scientifique de la théorie 05.
 - `requirements.txt` : dépendances Python.
 
 L'exécution du programme génère `quantum_workspace_resultats_02.json` ainsi que deux figures PNG dans le même dossier.
 
-## Prochaine hypothèse — H2
+## Hypothèse à poursuivre — contrôle adaptatif
 
 **Réorganisation prédictive à coût contrôlé** : estimer les corrélations et les besoins futurs en ressources à partir d'une représentation compacte, puis réorganiser les calculs uniquement lorsque le bénéfice attendu dépasse le coût de cette opération.
 
