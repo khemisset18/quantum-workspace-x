@@ -55,6 +55,30 @@ python quantum_workspace_tests_03.py
 python quantum_workspace_theorie_03_arbres.py
 ```
 
+## Théorie 04 — Routage anticipatif avec un MPS directement compressé
+
+Notre simulateur maintient maintenant l'état quantique sous forme de tenseurs **MPS** pendant l'évolution. Sur des circuits structurés de 8 et 10 qubits, il compare cinq organisations, dont une stratégie anticipant les **interactions futures connues**, une stratégie réactive, un ordre inspiré du nombre d'or et un contrôle statique compilé.
+
+| Indicateur | Ordre naturel | Anticipatif |
+| --- | ---: | ---: |
+| SWAP, 8 qubits (`chi=16`) | 192 | **20** |
+| Coefficients maximum, 8 qubits | 680 | 680 |
+| SWAP, 10 qubits (`chi=16`) | 320 | **33** |
+| Coefficients maximum, 10 qubits | 1 704 | **1 192** |
+| Fidélité finale, 10 qubits | 0,1423 | ~1,0000 |
+
+Ces résultats sont propres aux circuits expérimentés. Ils ne constituent **ni une découverte d'algorithme quantique ni une prédiction de l'intrication** : l'algorithme consulte les opérations déjà prévues. Les stratégies ne sont pas toutes à fidélité égale à `chi=16`.
+
+- [Code de la théorie 04](quantum_workspace_theorie_04_predictive_mps.py)
+- [Tests numériques de la théorie 04](quantum_workspace_tests_04.py)
+- [Carnet scientifique, protocole et limites](quantum_workspace_carnet_04.md)
+
+```bash
+python quantum_workspace_tests_04.py
+python quantum_workspace_theorie_04_predictive_mps.py --n 8 --chi 16
+python quantum_workspace_theorie_04_predictive_mps.py --n 10 --chi 16
+```
+
 ## Installation
 
 Python 3.10+ recommandé :
