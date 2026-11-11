@@ -20,6 +20,7 @@ jobs:
           python quantum_workspace_tests_02.py
           python quantum_workspace_tests_03.py
           python quantum_workspace_tests_04.py
+          python quantum_workspace_tests_05.py
       - name: Reproduce research experiments
         run: |
           python quantum_workspace_theorie_01.py
@@ -27,3 +28,4 @@ jobs:
           python quantum_workspace_theorie_03_arbres.py
           python quantum_workspace_theorie_04_predictive_mps.py --n 8 --chi 16
           python quantum_workspace_theorie_04_predictive_mps.py --n 10 --chi 16
+          python quantum_workspace_theorie_05_history_mps.py --n 8 --chi 16 --seed 15
