@@ -144,6 +144,31 @@ Les temps sont exploratoires (Python, un passage par graine), pas des benchmarks
 
 **Prochaine recherche :** utiliser des valeurs de Schmidt obtenues en jauge canonique, un véritable coût de RAM et plusieurs circuits hors mise au point, puis comparer à ces simulateurs établis. Aucune découverte originale ni avancée médicale n'a encore été démontrée.
 
+## Théorie 09 — Moteur hybride à budget mémoire (MPO / SWAP)
+
+**Retour à l'objectif principal :** simuler efficacement les systèmes quantiques sous forme MPS. Les interactions éloignées peuvent être appliquées par SWAP ou par MPO direct. Les deux sont des algorithmes déjà connus ; notre expérience compare leur coût et une règle simple qui contrôle le pic mémoire.
+
+Sur 10 qubits et `chi=32`, notre scénario de référence `switching` conserve une fidélité finale proche de 1 :
+
+| Approche | SWAP | Coefficients MPS au pic | Temps médian exploratoire |
+| --- | ---: | ---: | ---: |
+| SWAP | 160 | 2 728 | 49,72 ms |
+| MPO direct | 0 | 10 896 | 41,45 ms |
+| Hybride avec budget | 160 | 2 728 | 45,10 ms |
+
+**Conclusion honnête :** MPO évite les SWAP mais peut multiplier par quatre les coefficients temporaires. La politique à budget mémoire empêche ce pic dans le scénario considéré, sans démontrer une accélération générale. Ces mesures CPU sont des prototypes, pas des benchmarks stabilisés.
+
+- [Programme Théorie 09](quantum_workspace_theorie_09_hybride_mpo.py)
+- [Tests Théorie 09](quantum_workspace_tests_09.py)
+- [Carnet scientifique complet](quantum_workspace_carnet_09.md)
+
+```bash
+python quantum_workspace_tests_09.py
+python quantum_workspace_theorie_09_hybride_mpo.py --n 10 --chi 32 --repeats 2 --scenario switching
+```
+
+**Prochaine piste :** compression MPO en continu pour éviter de construire tous les tenseurs temporaires, puis une règle de décision à coût et incertitude mesurés.
+
 ## Installation
 
 Python 3.10+ recommandé :
