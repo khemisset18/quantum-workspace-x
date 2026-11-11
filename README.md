@@ -67,7 +67,7 @@ Notre simulateur maintient maintenant l'état quantique sous forme de tenseurs *
 | Coefficients maximum, 10 qubits | 1 704 | **1 192** |
 | Fidélité finale, 10 qubits | 0,1423 | ~1,0000 |
 
-Ces résultats sont propres aux circuits expérimentés. Ils ne constituent **ni une découverte d'algorithme quantique ni une prédiction de l'intrication** : l'algorithme consulte les opérations déjà prévues. Les stratégies ne sont pas toutes à fidélité égale à `chi=16`.
+Ces résultats sont propres aux circuits expérimentés. Ils ne constituent **ni une découverte d'algorithme quantique ni une prédiction de l'intrication** : l'algorithme consulte les opérations déjà prévues. Les stratégies ne sont pas toutes à fidélité égale à `chi=16`. À 10 qubits et **chi=32**, toutes retrouvent une fidélité proche de 1 ; les coefficients MPS maximum sont de **2 728 (ordre naturel) contre 1 192 (anticipatif)**. Cela correspond à une réduction de taille mathématique des tenseurs d'environ 56 %, **pas** à une économie de RAM mesurée.
 
 - [Code de la théorie 04](quantum_workspace_theorie_04_predictive_mps.py)
 - [Tests numériques de la théorie 04](quantum_workspace_tests_04.py)
