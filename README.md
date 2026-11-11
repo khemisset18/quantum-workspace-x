@@ -169,6 +169,16 @@ python quantum_workspace_theorie_09_hybride_mpo.py --n 10 --chi 32 --repeats 2 -
 
 **Prochaine piste :** compression MPO en continu pour éviter de construire tous les tenseurs temporaires, puis une règle de décision à coût et incertitude mesurés.
 
+## Nouvelles approches — Architecture adaptative à coût total
+
+Nous poursuivons le projet initial : **simulations quantiques MPS/TTN sur calcul classique**, avec choix adaptatif entre SWAP, MPO et méthodes de contraction, sous contraintes de mémoire, temps et précision. Les travaux sur la « friction atomique » sont hors périmètre de cette piste.
+
+- [Revue scientifique et hypothèses testables](RECHERCHE_NOUVELLES_APPROCHES.md)
+- [Théorie 10 : MPO streaming/zip-up](../../issues/5)
+- [Théorie 11 : sélecteur de méthode à coût contrôlé](../../issues/6)
+
+Aucun gain nouveau n'est encore établi : les comparaisons à fidélité égale, sur circuits non utilisés pour le réglage, constituent le critère de validation.
+
 ## Installation
 
 Python 3.10+ recommandé :
