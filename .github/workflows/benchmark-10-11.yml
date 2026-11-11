@@ -1,0 +1,45 @@
+name: MPO streaming and adaptive selector benchmarks
+
+on:
+  push:
+    paths:
+      - 'quantum_workspace_theorie_10_11_zipup_selector.py'
+      - 'quantum_workspace_tests_10_11.py'
+      - '.github/workflows/benchmark-10-11.yml'
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - n: 8
+            chi: 16
+            scenario: random
+          - n: 10
+            chi: 32
+            scenario: random
+          - n: 10
+            chi: 32
+            scenario: switching
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run numerical checks
+        run: python quantum_workspace_tests_10_11.py
+      - name: Isolated peak-RSS and time benchmark
+        env:
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+        run: |
+          python quantum_workspace_theorie_10_11_zipup_selector.py --n ${{ matrix.n }} --chi ${{ matrix.chi }} --repeats 2 --scenario ${{ matrix.scenario }} --seed 11
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qwx-zipup-n${{ matrix.n }}-${{ matrix.scenario }}
+          path: quantum_workspace_resultats_10_11_n*.json
