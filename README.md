@@ -124,6 +124,26 @@ Mesures sur un prototype Python, 6 graines, pas sur GPU. Les scénarios répéti
 
 **Prochaine hypothèse :** utiliser à très faible coût les informations de troncature déjà calculées par SVD pour savoir *quand* évaluer des corrélations supplémentaires, seulement si cela peut améliorer une décision. Voir [le projet de test suivant](../../issues).
 
+## Théorie 07 — Diagnostics peu coûteux et comparaison avec la recherche existante
+
+Cette expérience teste une **politique d'observation à budget limité**. Elle observe quelques corrélations *seulement* après un changement de régime et un signal numérique de pression MPS (dimension de liaison / poids SVD écarté). Le contrôleur **ne lit pas les opérations futures**.
+
+**Résultat négatif utile :** sur les petits circuits synthétiques testés, la stratégie budgetée **ne bat pas** la meilleure règle simple fondée sur l'historique. C'est documenté honnêtement, avec une vérification de fidélité exacte sur 8 et 10 qubits.
+
+| 8 qubits, temps médian par graine | Ordre fixe | Historique seul | Budgeté |
+| --- | ---: | ---: | ---: |
+| Répétitif | 30,8 ms | **14,6 ms** | 17,2 ms |
+| Changeant | 28,8 ms | **23,5 ms** | 38,4 ms |
+| Aléatoire | **38,2 ms** | 48,2 ms | 53,1 ms |
+
+Les temps sont exploratoires (Python, un passage par graine), pas des benchmarks robustes. Les coefficients MPS ne sont pas une mesure de RAM réelle.
+
+- [Code théorie 07](quantum_workspace_theorie_07_budget.py) · [Tests](quantum_workspace_tests_07.py) · [Carnet 07](quantum_workspace_carnet_07.md)
+- [Validation externe via quimb](quantum_workspace_validation_quimb.py) (dépendance facultative dans [requirements-reference.txt](requirements-reference.txt)).
+- Bibliothèques à réutiliser plutôt qu'à réécrire : [quimb](https://quimb.readthedocs.io/en/latest/circuit/circuit-mps.html), [TeNPy](https://tenpy.readthedocs.io/en/latest/reference/tenpy.networks.mps.MPS.html), [ITensorMPS](https://docs.itensor.org/ITensorMPS/stable/MPSandMPO.html), [Qiskit Aer](https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.AerSimulator.html).
+
+**Prochaine recherche :** utiliser des valeurs de Schmidt obtenues en jauge canonique, un véritable coût de RAM et plusieurs circuits hors mise au point, puis comparer à ces simulateurs établis. Aucune découverte originale ni avancée médicale n'a encore été démontrée.
+
 ## Installation
 
 Python 3.10+ recommandé :
