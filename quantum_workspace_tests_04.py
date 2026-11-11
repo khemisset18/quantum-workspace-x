@@ -49,6 +49,12 @@ def main():
     assert r10['natural']['fidelity_vs_exact']<.99
     assert r10['lookahead']['peak_tensor_coefficients']<r10['natural']['peak_tensor_coefficients']
 
+    # Equal-fidelity check: every policy can keep fidelity ~1 with chi=32.
+    b10full=q.benchmark(n=10,chi=32,passes=4)
+    rf={r['policy']:r for r in b10full['rows']}
+    assert all(r['fidelity_vs_exact']>1-1e-10 for r in rf.values())
+    assert rf['lookahead']['peak_tensor_coefficients']<rf['natural']['peak_tensor_coefficients']
+
     # Dense reference is deliberately disabled past ten qubits.
     b12=q.benchmark(n=12,chi=16,passes=2)
     assert all(r['fidelity_vs_exact'] is None for r in b12['rows'])
