@@ -23,6 +23,9 @@ jobs:
           python quantum_workspace_tests_05.py
           python quantum_workspace_tests_06.py
           python quantum_workspace_tests_07.py
+          python quantum_workspace_tests_08.py
+      - name: Atomic friction and moving spin test
+        run: python quantum_workspace_experience_08_friction.py --n 6 --chi 8 --dt 0.03 --sample-every 5
       - name: Reproduce research experiments
         run: |
           python quantum_workspace_theorie_01.py
