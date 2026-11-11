@@ -57,6 +57,18 @@ Sur ce circuit structuré, la stratégie anticipative réduit le nombre formel m
 
 Le programme de recherche est **expérimental et éducatif** : il n'est pas optimisé comme les bibliothèques MPS établies. Une simple stratégie sachant à l'avance les interactions d'un circuit bien structuré peut être favorisée par la conception du circuit.
 
+## Comparaison à fidélité comparable : 10 qubits, chi=32
+
+| Politique | Coefficients MPS maximum | Fidélité |
+| --- | ---: | ---: |
+| Ordre naturel | 2 728 | ~1,000000 |
+| Ordre doré | 2 728 | ~1,000000 |
+| Statique compilé | 2 728 | ~1,000000 |
+| Réactif | 2 728 | ~1,000000 |
+| Anticipatif | **1 192** | ~1,000000 |
+
+Dans ce cas contrôlé, le nombre maximal de coefficients de tenseur baisse d'environ **56 %** entre l'ordre naturel et le routage anticipatif, alors que les deux reproduisent l'état final. Cela reste une mesure de taille des tenseurs, et non une mesure RAM matérielle. Le circuit favorise des appariements structurés ; généralisation non établie.
+
 ## Limitations essentielles
 
 - **Pas de prédiction quantique :** seules les interactions du circuit à venir sont exploitées, pas des observations physiques apprises.
