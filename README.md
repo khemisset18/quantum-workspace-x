@@ -105,6 +105,25 @@ python quantum_workspace_tests_05.py
 python quantum_workspace_theorie_05_history_mps.py --n 8 --chi 16 --seed 15
 ```
 
+## Théorie 06 — Observer sélectivement les corrélations
+
+Le moteur observe au plus quelques paires de qubits, uniquement après des interactions déjà exécutées. Il ne voit pas le futur et maintient la représentation MPS compressée.
+
+**Résultat :** l'observation sélective est nettement moins chère que la matrice d'information mutuelle complète, mais **pas plus efficace que la méthode simple utilisant seulement l'historique** sur nos circuits de test.
+
+| 8 qubits, temps moyen en ms | Historique seul | Observation sélective | Corrélations complètes |
+| --- | ---: | ---: | ---: |
+| Motifs répétitifs | **23,3** | 49,1 | 420,2 |
+| Motifs changeants | **25,4** | 55,7 | 497,6 |
+| Motifs aléatoires | 74,5 | 73,7 | 719,3 |
+
+Mesures sur un prototype Python, 6 graines, pas sur GPU. Les scénarios répétitifs et changeants sont déterministes et identiques entre graines. Les temps ne sont pas des benchmarks matériels établis.
+
+- [Code théorie 06](quantum_workspace_theorie_06_observation_selective.py) — [Tests](quantum_workspace_tests_06.py) — [Carnet scientifique](quantum_workspace_carnet_06.md)
+- Pour tester : `python quantum_workspace_tests_06.py`
+
+**Prochaine hypothèse :** utiliser à très faible coût les informations de troncature déjà calculées par SVD pour savoir *quand* évaluer des corrélations supplémentaires, seulement si cela peut améliorer une décision. Voir [le projet de test suivant](../../issues).
+
 ## Installation
 
 Python 3.10+ recommandé :
@@ -132,6 +151,7 @@ python quantum_workspace_experience_01.py
 - `quantum_workspace_carnet_02.md` et `quantum_workspace_carnet_03.md` : protocoles expérimentaux et limites.
 - `quantum_workspace_theorie_05_history_mps.py` et `quantum_workspace_tests_05.py` : prédiction historique, contrôles négatifs et vérification.
 - `quantum_workspace_carnet_05.md` : carnet scientifique de la théorie 05.
+- `quantum_workspace_theorie_06_observation_selective.py`, `quantum_workspace_tests_06.py` et `quantum_workspace_carnet_06.md` : observation sélective et résultats.
 - `requirements.txt` : dépendances Python.
 
 L'exécution du programme génère `quantum_workspace_resultats_02.json` ainsi que deux figures PNG dans le même dossier.
