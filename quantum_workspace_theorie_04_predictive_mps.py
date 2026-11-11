@@ -9,7 +9,7 @@ small (n <= 10) independent accuracy verification.
 
 Controls: natural, golden initial order, precompiled static order (knows the
 whole circuit), reactive (previous batch) and lookahead (next batch).
-Both routing and placement SWAPs are counted and timed.
+Both routing and placement SWAPs are counted and timed; timing starts before initial static compilation. Timings are noisy and not a standardized benchmark.
 
 Run: python quantum_workspace_theorie_04_predictive_mps.py [--n 8 --chi 16]
 Requires: numpy.
@@ -230,10 +230,10 @@ def choose_target(order, pairs, threshold=1.0):
 
 def run_strategy(strategy,n=8,chi=8,passes=4,svd_tol=1e-12):
     batches=make_batches(n,passes)
+    start=time.perf_counter()
     initial=(golden_order(n) if strategy=='golden' else
              choose_compiled_order(n,batches) if strategy=='compiled_static' else
              tuple(range(n)))
-    start=time.perf_counter()
     mps=MPS(n,chi,svd_tol,order=initial)
     for i in range(n):mps.apply_one(i,H)
     previous_pairs=None
@@ -286,7 +286,7 @@ def benchmark(n=8,chi=8,passes=4,svd_tol=1e-12):
 def main():
     cli=argparse.ArgumentParser()
     cli.add_argument('--n',type=int,default=8)
-    cli.add_argument('--chi',type=int,default=8)
+    cli.add_argument('--chi',type=int,default=16)
     cli.add_argument('--passes',type=int,default=4)
     args=cli.parse_args()
     if args.n%2 or args.n<4 or args.n>24 or args.chi<1 or args.passes<1:
