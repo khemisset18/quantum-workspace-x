@@ -23,6 +23,7 @@ jobs:
           python quantum_workspace_tests_05.py
           python quantum_workspace_tests_06.py
           python quantum_workspace_tests_07.py
+          python quantum_workspace_tests_10_11.py
           python quantum_workspace_tests_09.py
       - name: Reproduce research experiments
         run: |
@@ -49,3 +50,4 @@ jobs:
           python -m pip install -r requirements-reference.txt
       - name: Cross-check MPS states with quimb
         run: python quantum_workspace_validation_quimb.py
+
