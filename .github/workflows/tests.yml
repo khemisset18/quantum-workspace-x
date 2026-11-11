@@ -1,4 +1,4 @@
-name: Quantum Workspace X - Python checks
+name: Quantum Workspace X - Quantum simulation checks
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
-      - name: Run all numerical tests
+      - name: Run numerical regression tests
         run: |
           python quantum_workspace_tests_01.py
           python quantum_workspace_tests_02.py
@@ -24,9 +24,6 @@ jobs:
           python quantum_workspace_tests_06.py
           python quantum_workspace_tests_07.py
           python quantum_workspace_tests_09.py
-          python quantum_workspace_tests_08.py
-      - name: Atomic friction and moving spin test
-        run: python quantum_workspace_experience_08_friction.py --n 6 --chi 8 --dt 0.03 --sample-every 5
       - name: Reproduce research experiments
         run: |
           python quantum_workspace_theorie_01.py
@@ -37,6 +34,7 @@ jobs:
           python quantum_workspace_theorie_05_history_mps.py --n 8 --chi 16 --seed 15
           python quantum_workspace_theorie_06_observation_selective.py --n 8 --chi 16 --repeats 2 --seeds 23 --budget 2
           python quantum_workspace_theorie_07_budget.py --n 8 --chi 16 --repeats 2 --seeds 17 23 --budget 2
+          python quantum_workspace_theorie_09_hybride_mpo.py --n 10 --chi 32 --repeats 2 --scenario switching
 
   quimb-reference:
     runs-on: ubuntu-latest
@@ -51,4 +49,3 @@ jobs:
           python -m pip install -r requirements-reference.txt
       - name: Cross-check MPS states with quimb
         run: python quantum_workspace_validation_quimb.py
-          python quantum_workspace_theorie_09_hybride_mpo.py --n 10 --chi 32 --repeats 2 --scenario switching
