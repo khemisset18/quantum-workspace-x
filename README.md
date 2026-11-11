@@ -27,6 +27,34 @@ Il s'agit de dimensions de liaison, **pas** de mesures du temps d'exécution ou 
 
 **Important : ces techniques d'optimisation sont déjà connues et les résultats ne constituent pas une découverte scientifique nouvelle.** L'objectif est de construire un banc d'essai contrôlé avant d'évaluer des hypothèses originales.
 
+## Nouvelles expériences — Géométrie et arbres de tenseurs
+
+**Théorie 02 — Nombre d'or.** Test d'un ordre quasi-périodique fondé sur `phi`, comparé à un ordre naturel, aléatoire et guidé par les corrélations. **Pas d'avantage universel du nombre d'or démontré.**
+
+- Programme : [Théorie 02](quantum_workspace_theorie_02_nombre_or.py)
+- Protocole et résultats : [Carnet 02](quantum_workspace_carnet_02.md)
+
+**Théorie 03 — Arbres Fibonacci et intrication.** Comparaison de cinq architectures arborescentes exactes, plus des contrôles aléatoires, sur 8 qubits. Un test dynamique confronte une topologie fixe, une topologie décalée d'un pas et un oracle utilisant les corrélations de l'état courant.
+
+| Cas : 4 paires intriquées | Coefficients TTN formels |
+| --- | ---: |
+| Arbre équilibré, ordre naturel | 864 |
+| Arbre Fibonacci, ordre naturel | 528 |
+| Arbre guidé par l'intrication | **51** |
+
+Ce sont des **comptes de coefficients mathématiques**, et non des mesures de RAM ou de temps. Les calculs conservent l'état complet, et le résultat ne démontre pas encore une accélération.
+
+- Programme : [Théorie 03](quantum_workspace_theorie_03_arbres.py)
+- Tests : [Tests 03](quantum_workspace_tests_03.py)
+- Protocole, limites et résultats : [Carnet 03](quantum_workspace_carnet_03.md)
+
+```bash
+python quantum_workspace_tests_01.py
+python quantum_workspace_tests_02.py
+python quantum_workspace_tests_03.py
+python quantum_workspace_theorie_03_arbres.py
+```
+
 ## Installation
 
 Python 3.10+ recommandé :
@@ -49,6 +77,9 @@ python quantum_workspace_experience_01.py
 - `quantum_workspace_theorie_01.py` : algorithme expérimental et graphiques.
 - `quantum_workspace_tests_01.py` : tests de cohérence.
 - `quantum_workspace_carnet_01.md` : méthode, limites, résultats et références scientifiques.
+- `quantum_workspace_theorie_02_nombre_or.py` et `quantum_workspace_tests_02.py` : hypothèse d'ordre doré.
+- `quantum_workspace_theorie_03_arbres.py` et `quantum_workspace_tests_03.py` : arbres de tenseurs et tests.
+- `quantum_workspace_carnet_02.md` et `quantum_workspace_carnet_03.md` : protocoles expérimentaux et limites.
 - `requirements.txt` : dépendances Python.
 
 L'exécution du programme génère `quantum_workspace_resultats_02.json` ainsi que deux figures PNG dans le même dossier.
