@@ -7,7 +7,8 @@ MPO one site at a time using SVD, followed by right-canonicalization and a
 controlled left-to-right compression sweep. Internal SVDs may be truncated;
 local discarded weights DO NOT prove a global fidelity bound.
 
-Policies: swap, mpo_eager (theory 09), zipup, budget_selector.
+Policies: swap, mpo_eager (theory 09), zipup, zipup_qr, budget_selector.
+The QR variant avoids first-pass SVD when it would retain all singular vectors.
 All policies use only the current gate and present MPS tensors; none sees
 future circuit batches. Accuracy independently checked against dense state
 on <=10 qubits. Subprocess suite isolates peak Linux ru_maxrss memory.
@@ -29,7 +30,7 @@ import quantum_workspace_theorie_09_hybride_mpo as q9
 Z = np.array([1., -1.])
 IDENTITY = np.eye(4, dtype=complex)
 ROOT = Path(__file__).resolve().parent
-POLICIES = ('swap', 'mpo_eager', 'zipup', 'budget_selector')
+POLICIES = ('swap', 'mpo_eager', 'zipup', 'zipup_qr', 'budget_selector')
 
 
 def expanded_site(A, i, lo, hi, theta):
@@ -60,7 +61,7 @@ def right_canonicalize(mps, start):
         mps.update_peaks()
 
 
-def apply_zz_zipup(mps, a, b, theta, oversample=2):
+def apply_zz_zipup(mps, a, b, theta, oversample=2, prefer_qr=False):
     """Streaming MPO contraction. Local cap is oversample*chi.
 
     A forward SVD pass contracts a single MPO tensor and MPS tensor at once.
@@ -88,22 +89,31 @@ def apply_zz_zipup(mps, a, b, theta, oversample=2):
         if i<hi:
             l,_,r=local.shape
             mat=local.reshape(2*l,r)
-            U,s,Vh=np.linalg.svd(mat,full_matrices=False)
-            mps.svd_calls+=1
-            mps.total_svd_elements+=mat.size
-            keep=min(cap,len(s))
-            total=float(np.dot(s,s))
-            if total and mps.svd_tol>0:
-                # Forward truncation is optional and only a heuristic.
-                tail=np.cumsum((s[::-1]**2))[::-1]
-                for k in range(1,keep+1):
-                    if (float(tail[k]) if k<len(s) else 0.)/total<=mps.svd_tol:
-                        keep=k
-                        break
-            mps.discarded_weight_proxy+=(
-                float(np.dot(s[keep:],s[keep:]))/total if total else 0.)
-            mps.tensors[i]=U[:,:keep].reshape(l,2,keep)
-            carry=s[:keep,None]*Vh[:keep,:]
+            if prefer_qr and min(mat.shape)<=cap:
+                # No first-pass truncation is necessary: QR is less expensive.
+                # Final right canonicalization + SVD compression still applies.
+                Q,R=np.linalg.qr(mat,mode='reduced')
+                k=Q.shape[1]
+                mps.qr_calls=getattr(mps,'qr_calls',0)+1
+                mps.tensors[i]=Q.reshape(l,2,k)
+                carry=R
+            else:
+                U,s,Vh=np.linalg.svd(mat,full_matrices=False)
+                mps.svd_calls+=1
+                mps.total_svd_elements+=mat.size
+                keep=min(cap,len(s))
+                total=float(np.dot(s,s))
+                if total and mps.svd_tol>0:
+                    # Forward truncation is optional and only a heuristic.
+                    tail=np.cumsum((s[::-1]**2))[::-1]
+                    for k in range(1,keep+1):
+                        if (float(tail[k]) if k<len(s) else 0.)/total<=mps.svd_tol:
+                            keep=k
+                            break
+                mps.discarded_weight_proxy+=(
+                    float(np.dot(s[keep:],s[keep:]))/total if total else 0.)
+                mps.tensors[i]=U[:,:keep].reshape(l,2,keep)
+                carry=s[:keep,None]*Vh[:keep,:]
         else:
             mps.tensors[i]=local
         mps.update_peaks()
@@ -126,7 +136,7 @@ def proposed_choice(mps,a,b,memory_factor=3.0):
     current=mps.tensor_coefficients()
     # Guardrail against MPS×MPO growth. May reject useful zip-up cases.
     upper=q9.predicted_mpo_coefficients(mps,a,b)
-    return 'zipup' if upper<=memory_factor*max(current,1) else 'swap'
+    return 'zipup_qr' if upper<=memory_factor*max(current,1) else 'swap'
 
 
 def run(mode,n=8,chi=16,repeats=2,scenario='random',seed=11,
@@ -139,7 +149,7 @@ def run(mode,n=8,chi=16,repeats=2,scenario='random',seed=11,
     mps=q4.MPS(n=n,chi=chi,svd_tol=1e-13)
     for j in range(n):mps.apply_one(j,q4.H)
     mps.peak_working_coefficients=mps.tensor_coefficients()
-    counts={'swap':0,'mpo_eager':0,'zipup':0}
+    counts={'swap':0,'mpo_eager':0,'zipup':0,'zipup_qr':0}
     decisions=0
     for batch in batches:
         for ev in batch:
@@ -155,7 +165,7 @@ def run(mode,n=8,chi=16,repeats=2,scenario='random',seed=11,
             elif choice=='mpo_eager':
                 q9.apply_zz_mpo(mps,a,b,angle)
             else:
-                apply_zz_zipup(mps,a,b,angle,oversample=oversample)
+                apply_zz_zipup(mps,a,b,angle,oversample=oversample,prefer_qr=(choice=='zipup_qr'))
     seconds=time.perf_counter()-start
     fid=None
     if reference is not None:
@@ -170,7 +180,7 @@ def run(mode,n=8,chi=16,repeats=2,scenario='random',seed=11,
         'peak_mps_coefficients':mps.peak_tensor_coefficients,
         'peak_working_coefficients_proxy':mps.peak_working_coefficients,
         'peak_svd_input_coefficients':mps.peak_svd_input_coefficients,
-        'svd_calls':mps.svd_calls,'swaps':mps.swaps,
+        'svd_calls':mps.svd_calls,'qr_calls':getattr(mps,'qr_calls',0),'swaps':mps.swaps,
         'choices':counts,'decision_count':decisions,
         'discarded_weight_proxy':mps.discarded_weight_proxy
     }
