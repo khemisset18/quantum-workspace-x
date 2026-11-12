@@ -179,6 +179,24 @@ Nous poursuivons le projet initial : **simulations quantiques MPS/TTN sur calcul
 
 Aucun gain nouveau n'est encore établi : les comparaisons à fidélité égale, sur circuits non utilisés pour le réglage, constituent le critère de validation.
 
+## Théories 10 et 11 — MPO streaming et choix adaptatif
+
+Prototype testé et documenté : application **MPO zip-up en continu**, variante **QR** qui évite des SVD inutiles, et **sélecteur prudent** de méthode selon un budget mémoire estimé.
+
+Les tests sur 8/10 qubits ont passé les validations de fidélité. Les performances sont **mitigées** : zip-up QR est plus rapide que notre premier zip-up SVD, mais ne bat pas systématiquement MPO direct ou SWAP ; le sélecteur n'a pas encore démontré d'avantage contre la meilleure méthode simple. Les petites différences RSS sont dans le bruit des mesures.
+
+- [Code du simulateur MPO streaming et sélecteur](quantum_workspace_theorie_10_11_zipup_selector.py)
+- [Tests automatiques](quantum_workspace_tests_10_11.py)
+- [Carnet avec chiffres, limites et protocole](quantum_workspace_carnet_10_11.md)
+- [Benchmarks GitHub Actions isolés](https://github.com/khemisset18/quantum-workspace-x/actions/runs/43124140646)
+
+```bash
+python quantum_workspace_tests_10_11.py
+python quantum_workspace_theorie_10_11_zipup_selector.py --n 10 --chi 32 --repeats 2 --scenario random --seed 11
+```
+
+La prochaine amélioration testera un contrôle de coût calibré et des méthodes zip-up de référence disponibles dans **quimb**, sur des circuits plus longs et des problèmes physiques, à précision comparable.
+
 ## Installation
 
 Python 3.10+ recommandé :
